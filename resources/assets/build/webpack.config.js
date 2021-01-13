@@ -13,6 +13,18 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const desire = require('./util/desire');
 const config = require('./config');
 
+const mergeConfig = {
+  module: {
+    rules: {
+	  test: 'match',
+	  use: {
+	    loader: 'match',
+	    options: 'replace',
+	  },
+    },
+  },
+};
+
 const assetsFilenames = (config.enabled.cacheBusting) ? config.cacheBusting : '[name]';
 
 let webpackConfig = {
@@ -182,7 +194,7 @@ let webpackConfig = {
 /* eslint-disable global-require */ /** Let's only load dependencies as needed */
 
 if (config.enabled.optimize) {
-  webpackConfig = merge(webpackConfig, require('./webpack.config.optimize'));
+  webpackConfig = mergeWithRules(mergeConfig)(require('./webpack.config.optimize'), webpackConfig);
 }
 
 if (config.enabled.cacheBusting) {
@@ -201,7 +213,7 @@ if (config.enabled.cacheBusting) {
 
 if (config.enabled.watcher) {
   webpackConfig.entry = require('./util/addHotMiddleware')(webpackConfig.entry);
-  webpackConfig = merge(webpackConfig, require('./webpack.config.watch'));
+  webpackConfig = mergeWithRules(mergeConfig)(require('./webpack.config.watch'), webpackConfig);
 }
 
 /**
@@ -214,14 +226,4 @@ if (config.enabled.watcher) {
  * ability to change certain options.
  */
 
-module.exports = mergeWithRules({
-  module: {
-    rules: {
-	  test: 'match',
-	  use: {
-	    loader: 'match',
-	    options: 'replace',
-	  },
-    },
-  },
-})( webpackConfig, desire(`${__dirname}/webpack.config.preset`) ? desire(`${__dirname}/webpack.config.preset`) : {} )
+module.exports = mergeWithRules(mergeConfig)( webpackConfig, desire(`${__dirname}/webpack.config.preset`) ? desire(`${__dirname}/webpack.config.preset`) : {} )
