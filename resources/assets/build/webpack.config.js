@@ -15,12 +15,12 @@ const config = require('./config');
 
 const mergeConfig = {
   module: {
-    rules: {
-	  test: 'match',
-	  use: {
-	    loader: 'match',
-	    options: 'replace',
-	  },
+      rules: {
+      test: 'match',
+      use: {
+        loader: 'match',
+        options: 'replace',
+	    },
     },
   },
 };
