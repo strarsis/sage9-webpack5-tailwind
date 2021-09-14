@@ -8,7 +8,7 @@ const config = require('./config');
 module.exports = {
   module: {
     rules: [
-	  {
+	    {
         test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
